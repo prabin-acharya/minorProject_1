@@ -17,13 +17,13 @@ encoder_model = tf.keras.models.load_model('./models/encoder_model.h5')
 decoder_model = tf.keras.models.load_model('./models/decoder_model.h5')
 
 
-
 # Load the data
-train_data = pd.read_table('./data/train.csv', sep=',', names=['question','sql'])
-val_data = pd.read_table('./data/validation.csv', sep=',', names=['question','sql'])
-test_data = pd.read_table('./data/test.csv', sep=',', names=['question','sql'])
-
-print("---------------------------------------------------------------------------------------------")
+train_data = pd.read_table(
+    './data/train.csv', sep=',', names=['question', 'sql'])
+val_data = pd.read_table('./data/validation.csv',
+                         sep=',', names=['question', 'sql'])
+test_data = pd.read_table('./data/test.csv', sep=',',
+                          names=['question', 'sql'])
 
 
 # Preprocess the data
@@ -36,6 +36,7 @@ def preprocess(text):
     remove_digits = str.maketrans('', '', digits)
     text = text.translate(remove_digits)
     return text
+
 
 train_data.question = train_data.question.apply(preprocess)
 train_data.sql = train_data.sql.apply(preprocess)
@@ -50,35 +51,49 @@ train_data.sql = train_data.sql.apply(lambda x: 'start ' + x + ' end')
 val_data.sql = val_data.sql.apply(lambda x: 'start ' + x + ' end')
 
 
+# Tokenize the input and output sentences
+eng_tokenizer = Tokenizer()
+eng_tokenizer.fit_on_texts(train_data.question)
+input_sequences_train = eng_tokenizer.texts_to_sequences(train_data.question)
+input_sequences_train = pad_sequences(input_sequences_train, padding='post')
 
-# Load the tokenizers
-tokenizer = Tokenizer()
-max_input_length=42 
-max_output_length=58
-
+input_sequences_val = eng_tokenizer.texts_to_sequences(val_data.question)
+input_sequences_val = pad_sequences(input_sequences_val, padding='post')
 
 sql_tokenizer = Tokenizer()
 sql_tokenizer.fit_on_texts(train_data.sql)
+output_sequences_train = sql_tokenizer.texts_to_sequences(train_data.sql)
+output_sequences_train = pad_sequences(output_sequences_train, padding='post')
 
+output_sequences_val = sql_tokenizer.texts_to_sequences(val_data.sql)
+output_sequences_val = pad_sequences(output_sequences_val, padding='post')
+
+# Compute max_input_length and max_output_length
+max_input_length = input_sequences_train.shape[1]
+max_output_length = output_sequences_train.shape[1]
 
 
 @app.route('/')
 def hello():
     return "Hello, Flask!"
 
+
 @app.route('/predict', methods=['POST', 'GET'])
 def predict():
-    # data = request.json
-    # question = data['question']
-    question = ''
+    data = request.json
+    question = data['question_nl']
+
     # Tokenize and pad the input sequence
-    input_sequence = tokenizer.texts_to_sequences([question])
-    input_sequence = pad_sequences(input_sequence, maxlen=max_input_length, padding='post')
+    # input_sequence = tokenizer.texts_to_sequences([question])
+    input_sequence = eng_tokenizer  .texts_to_sequences([question])
+    input_sequence = pad_sequences(
+        input_sequence, maxlen=max_input_length, padding='post')
 
     # Generate prediction
     prediction = predict_sequence(input_sequence)
 
     return jsonify({'prediction': prediction})
+
 
 def predict_sequence(input_sequence):
     states_value = encoder_model.predict(input_sequence)
@@ -87,11 +102,9 @@ def predict_sequence(input_sequence):
     stop_condition = False
     decoded_sentence = ''
     while not stop_condition:
-        output_tokens, h, c = decoder_model.predict([target_seq] + states_value)
+        output_tokens, h, c = decoder_model.predict(
+            [target_seq] + states_value)
         sampled_token_index = np.argmax(output_tokens[0, -1, :])
-        print("#########################")
-        print(sampled_token_index)
-        print("##########################")
         sampled_token = sql_tokenizer.index_word[sampled_token_index]
         if sampled_token != 'end' and sampled_token != 'start':
             decoded_sentence += ' ' + sampled_token
@@ -102,6 +115,6 @@ def predict_sequence(input_sequence):
         states_value = [h, c]
     return decoded_sentence.strip()
 
+
 if __name__ == '__main__':
     app.run(debug=True)
-
