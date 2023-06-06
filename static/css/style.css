@@ -1,0 +1,201 @@
+/* body background graidient from buttom to top */
+body {
+    background: linear-gradient(to top, #451653 10%, #161539 60%);
+    background-attachment: fixed;
+    background-repeat: no-repeat;
+    /* background-size: cover;
+    font-family: 'Roboto', sans-serif;
+    font-weight: 300;
+    height: 100vh;
+    margin: 0;
+    overflow: hidden;
+    width: 100%; */
+    flex-direction: column;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+
+/* make heading text in center */
+.heading {
+    color: #fff;
+    font-size: 2em;
+    font-weight: 300;
+    margin: 0;
+    padding: 0;
+    text-align: center;
+    text-transform: uppercase;
+    margin-bottom: 2%;
+}
+
+.to_text {
+    color: #ca6ce5;
+}
+
+.sql_text {
+    color: #5de1e6
+}
+
+
+.search-container {
+    background-color: rgba(13, 13, 33, 0.8);
+    border-radius: 20px;
+    padding: 20px;
+    box-shadow: 0 0 20px rgba(0, 0, 0, 0.1);
+    width: 80%;
+    max-width: 800px;
+    display: flex;
+    justify-content: center;
+    /* Center horizontally */
+    align-items: center;
+    /* Center vertically */
+}
+
+.search-container input[type="text"] {
+    flex: 1;
+    color: white;
+    border: none;
+    padding: 10px;
+    font-size: 16px;
+    background-color: transparent;
+    outline: none;
+
+}
+
+.search-container button {
+    border: none;
+    padding: 10px 20px;
+    font-size: 16px;
+    background-color: #4CAF50;
+    color: #fff;
+    border-radius: 4px;
+    cursor: pointer;
+    outline: none;
+}
+
+.generate-button {
+    width: 80%;
+    max-width: 800px;
+    display: flex;
+    justify-content: end;
+}
+
+.glow-on-hover {
+    margin-top: 30px;
+    width: 220px;
+    height: 50px;
+    border: none;
+    outline: none;
+    color: #fff;
+    background: #111;
+    cursor: pointer;
+    position: relative;
+    z-index: 0;
+    border-radius: 10px;
+    align-items: end;
+}
+
+.glow-on-hover:before {
+    content: '';
+    background: linear-gradient(45deg, #ff0000, #ff7300, #fffb00, #48ff00, #00ffd5, #002bff, #7a00ff, #ff00c8, #ff0000);
+    position: absolute;
+    top: -2px;
+    left: -2px;
+    background-size: 400%;
+    z-index: -1;
+    filter: blur(5px);
+    width: calc(100% + 4px);
+    height: calc(100% + 4px);
+    animation: glowing 20s linear infinite;
+    opacity: 0;
+    transition: opacity .3s ease-in-out;
+    border-radius: 10px;
+}
+
+.glow-on-hover:active {
+    color: #000
+}
+
+.glow-on-hover:active:after {
+    background: transparent;
+}
+
+.glow-on-hover:hover:before {
+    opacity: 1;
+}
+
+.glow-on-hover:after {
+    z-index: -1;
+    content: '';
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    background: #111;
+    left: 0;
+    top: 0;
+    border-radius: 10px;
+}
+
+@keyframes glowing {
+    0% {
+        background-position: 0 0;
+    }
+
+    50% {
+        background-position: 400% 0;
+    }
+
+    100% {
+        background-position: 0 0;
+    }
+}
+
+
+.glass-text {
+    background-color: rgba(13, 13, 33, 0.3);
+    border-radius: 10px;
+    padding: 10px;
+    margin-top: 5%;
+    height: 100px;
+    box-shadow: 0 0 20px rgba(0, 0, 0, 0.1);
+    color: #333;
+    font-size: 20px;
+    font-weight: normal;
+    /* text-align: center; */
+    width: 800px;
+    letter-spacing: 1.2px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    color: white;
+}
+
+#answer {
+    /* font-size: 30px;
+    margin: 30px;
+    padding: 40px 20px;
+    font-weight: normal;
+    text-align: center;
+    width: 800px;
+    letter-spacing: 1.2px;
+    color: red;
+    background-color: rgba(212, 212, 212, 0.418);
+    height: 100px; */
+    background-color: rgba(13, 13, 33, 0.3);
+    border-radius: 10px;
+    padding: 10px;
+    margin-top: 5%;
+    height: 100px;
+    box-shadow: 0 0 20px rgba(0, 0, 0, 0.1);
+    color: #333;
+    font-size: 20px;
+    font-weight: normal;
+    /* text-align: center; */
+    width: 800px;
+    letter-spacing: 1.2px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    color: white;
+}

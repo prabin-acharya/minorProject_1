@@ -1,4 +1,4 @@
-from flask import Flask, jsonify, request
+from flask import Flask, jsonify, request, render_template
 import tensorflow as tf
 from tensorflow.keras.preprocessing.sequence import pad_sequences
 from tensorflow.keras.preprocessing.text import Tokenizer
@@ -77,11 +77,38 @@ max_output_length = output_sequences_train.shape[1]
 def hello():
     return "Hello, Flask!"
 
+@app.route('/hello')
+def index():
+    return render_template('index.html')
+
+@app.route('/api', methods=['POST'])
+def api():
+    if request.headers['Content-Type'] == 'application/json':
+        data = request.json
+        input_text = data.get('input_text')
+    else:
+        input_text = request.form.get('input_text')
+
+    # Make use of the input_text for further processing
+
+    # return f"Received input te: {input_text}"
+    return jsonify({'prediction': input_text})
+
+
 
 @app.route('/predict', methods=['POST', 'GET'])
 def predict():
-    data = request.json
-    question = data['question_nl']
+
+    if request.headers['Content-Type'] == 'application/json':
+        data = request.json
+        question = data.get('input_text')
+    else:
+        question = request.form.get('input_text')
+
+    
+    # data = request.json
+    # question = data['question_nl']
+
 
     # Tokenize and pad the input sequence
     # input_sequence = tokenizer.texts_to_sequences([question])

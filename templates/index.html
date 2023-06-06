@@ -1,0 +1,67 @@
+<!-- make a UI as useblackbox.io  -->
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="main.css">
+    <title>Text2SQL</title>
+    <link rel="stylesheet" href="./../static/css/style.css">
+
+</head>
+
+<body>
+    <!-- Heading Text2SQL in center  with css -->
+    <div class="heading">
+        <h1>Text<span class="to_text">2</span><span class="sql_text">SQL</span></h1>
+    </div>
+
+    <div class="search-container">
+        <input type="text" id="inputText" placeholder="Start Typing Your Text Query...">
+    </div>
+    <div class="generate-button">
+        <button class="glow-on-hover" type="button" id="submitButton" onclick="makeAPIRequest()">Generate SQL
+            🪄</button>
+    </div>
+
+    <div id="answer">
+        <!-- <h1 class="glass-text">SELECT happiness FROM life</h1> -->
+        SELECT happiness FROM life
+    </div>
+
+    <script>
+
+        function makeAPIRequest() {
+            var inputText = document.getElementById('inputText').value;
+
+            var button = document.getElementById('submitButton');
+            button.innerHTML = 'Loading...';
+            button.disabled = true;
+
+            var xhr = new XMLHttpRequest();
+            xhr.open('POST', '/predict', true);
+            xhr.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
+            xhr.onreadystatechange = function () {
+                if (xhr.readyState === 4) {
+                    button.innerHTML = 'Submit';
+                    button.disabled = false;
+
+                    if (xhr.status === 200) {
+                        var response = xhr.responseText;
+                        var prediction = JSON.parse(response).prediction;
+
+                        document.getElementById('answer').innerText = prediction;
+
+                    } else {
+                        console.error('Error: ' + xhr.status);
+                    }
+                }
+            };
+            xhr.send('input_text=' + encodeURIComponent(inputText));
+        }
+    </script>
+
+</body>
+
+</html>
